@@ -1,0 +1,34 @@
+---
+# FILE: add_users.yaml
+#
+# This playbook adds users to a system with their ssh pub key
+
+- hosts: servers
+  name: Add users to systems
+  gather_facts: yes
+  remote_user: root
+  tasks:
+    - name: Add user
+      user:
+        name: "{{ item.name }}"
+        password: "{{ item.password|default(omit) }}"
+        groups: "{% for group in item.groups %}{{ group }}{% if not loop.last %},{% endif %}{% endfor %}"
+        state: present
+      with_items: "{{ users }}"
+
+    - name: Add sshkeys to user
+      authorized_key:
+        user: "{{ item.name }}"
+        key: "{{ item.ssh_key }}"
+        state: present
+      when: item.ssh_key is defined
+      with_items: "{{ users }}"
+
+    - name: Ensure users of wheel don't need to enter password
+      lineinfile:
+        path: /etc/sudoers
+        state: present
+        regexp: '^%wheel\s'
+        line: '%wheel ALL=(ALL) NOPASSWD: ALL'
+        validate: '/usr/sbin/visudo -cf %s'
+      when: wheel_passwordless is defined and wheel_passwordless

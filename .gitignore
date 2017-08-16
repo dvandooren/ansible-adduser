@@ -1,0 +1,52 @@
+### Specific files that we do not want to contaminate the git repo
+hosts
+group_vars/all/secret
+envs/*
+!envs/vagrant.secret
+!envs/vagrant.hosts
+!envs/vagrant.config
+!envs/sample.secret
+!envs/sample.hosts
+!envs/sample.config
+gen-files/*
+!gen-files/README.md
+gen-configs/*
+!gen-configs/README.md
+gen-scripts/*
+!gen-scripts/README.md
+packages/*
+!packages/README.md
+
+### do not include large binary objects to git
+*.ova
+*.iso
+*.rpm
+*.zip
+*.bin
+
+### Ansible filed runs
+*.retry
+.ansible/
+
+### SSH keys
+.ssh/
+.rnd
+
+### Vagrant
+.vagrant/
+
+### Git
+.gitconfig
+
+### Bash
+.bash_history
+.bash_logout
+.bashrc
+.bash_profile
+
+### Vim swp files #
+*.swo
+*.swp
+*~
+.viminfo
+.vim/
